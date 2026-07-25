@@ -1,32 +1,45 @@
 # 📰 Fake News Detection System
 
-A machine learning-powered Fake News Detection System built with **Python**, **Scikit-learn**, and **FastAPI**. The project classifies news articles as **Fake** or **Real** using a **TF-IDF Vectorizer** and a **Logistic Regression** model, and exposes the trained model through a REST API.
+A machine learning-powered **Fake News Detection System** built using **Python, Scikit-learn, and FastAPI**.
+
+The project classifies news articles as **Fake News** or **Real News** using a **TF-IDF Vectorizer** for feature extraction and a **Logistic Regression** classifier. The trained machine learning model is deployed through a FastAPI REST API that provides predictions along with confidence scores.
 
 ---
 
 ## 🚀 Features
 
-* Preprocesses and combines fake and real news datasets
-* Converts text into numerical features using TF-IDF
-* Trains a Logistic Regression classifier
-* Achieves approximately **98.6% test accuracy**
-* Saves the trained model and vectorizer using Joblib
-* Provides predictions through a FastAPI REST API
-* Returns prediction confidence scores
-* Includes input validation and error handling
-* Interactive API documentation with Swagger UI
+* Data preprocessing and cleaning of fake and real news datasets
+* Text feature extraction using TF-IDF Vectorization
+* Machine learning classification using Logistic Regression
+* Achieved approximately **98.6% test accuracy**
+* Saved trained model and vectorizer using Joblib
+* FastAPI REST API for real-time predictions
+* Prediction confidence scores using `predict_proba()`
+* Input validation and error handling
+* Interactive API documentation using Swagger UI
 
 ---
 
 ## 🛠️ Tech Stack
 
+### Programming Language
+
 * Python 3.13
+
+### Machine Learning
+
 * Pandas
 * NumPy
 * Scikit-learn
+* TF-IDF Vectorizer
+* Logistic Regression
 * Joblib
+
+### Backend API
+
 * FastAPI
 * Uvicorn
+* Pydantic
 
 ---
 
@@ -36,20 +49,21 @@ A machine learning-powered Fake News Detection System built with **Python**, **S
 FakeNewsDetector/
 │
 ├── app/
-│   ├── main.py
-│   └── predictor.py
-│
-├── data/
-│   ├── Fake.csv
-│   ├── True.csv
-│   └── archive.zip
+│   ├── main.py                 # FastAPI application
+│   └── predictor.py            # Model loading and prediction logic
 │
 ├── models/
-│   ├── fake_news_model.pkl
-│   └── tfidf_vectorizer.pkl
+│   ├── fake_news_model.pkl     # Trained Logistic Regression model
+│   └── tfidf_vectorizer.pkl    # Saved TF-IDF vectorizer
+│
+├── screenshots/
+│   ├── home.png
+│   ├── real_prediction.png
+│   ├── empty_input.png
+│   └── short_input.png
 │
 ├── training/
-│   └── train.py
+│   └── train.py                # Model training script
 │
 ├── requirements.txt
 ├── README.md
@@ -58,32 +72,39 @@ FakeNewsDetector/
 
 ---
 
-## ⚙️ Installation
+# ⚙️ Installation
 
-Clone the repository:
+## 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/UnnatiGoyal04/FakeNewsDetector.git
+
 cd FakeNewsDetector
 ```
 
-Create and activate a virtual environment:
+---
+
+## 2. Create Virtual Environment
 
 ### Windows
 
 ```bash
 python -m venv venv
+
 venv\Scripts\activate
 ```
 
-### macOS / Linux
+### macOS/Linux
 
 ```bash
 python3 -m venv venv
+
 source venv/bin/activate
 ```
 
-Install the required packages:
+---
+
+## 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -91,7 +112,52 @@ pip install -r requirements.txt
 
 ---
 
-## ▶️ Running the API
+# 📊 Dataset
+
+The dataset files are not included in this repository because the original CSV files exceed GitHub's recommended file size limits.
+
+The project uses:
+
+* `Fake.csv`
+* `True.csv`
+
+from the Fake News Dataset.
+
+To train the model:
+
+1. Download the dataset.
+2. Place the files inside:
+
+```text
+data/
+│
+├── Fake.csv
+└── True.csv
+```
+
+3. Run:
+
+```bash
+python training/train.py
+```
+
+This will:
+
+* Load and preprocess the dataset.
+* Create TF-IDF features.
+* Train the Logistic Regression model.
+* Evaluate performance.
+* Save:
+
+```text
+models/
+├── fake_news_model.pkl
+└── tfidf_vectorizer.pkl
+```
+
+---
+
+# ▶️ Running the API
 
 Start the FastAPI server:
 
@@ -99,24 +165,51 @@ Start the FastAPI server:
 uvicorn app.main:app --reload
 ```
 
-Open the API documentation:
+The API will run at:
 
-* Swagger UI: `http://127.0.0.1:8000/docs`
-* ReDoc: `http://127.0.0.1:8000/redoc`
+```text
+http://127.0.0.1:8000
+```
 
 ---
 
-## 📡 API Endpoints
+# 📖 API Documentation
 
-### GET /
+Swagger UI:
 
-Returns a welcome message.
+```text
+http://127.0.0.1:8000/docs
+```
 
-### POST /predict
+ReDoc:
 
-Predicts whether a news article is fake or real.
+```text
+http://127.0.0.1:8000/redoc
+```
 
-### Example Request
+---
+
+# 📡 API Endpoints
+
+## GET /
+
+Checks whether the API is running.
+
+### Response
+
+```json
+{
+  "message": "Fake News Detection API is running!"
+}
+```
+
+---
+
+## POST /predict
+
+Classifies a news article as Fake or Real.
+
+### Request
 
 ```json
 {
@@ -124,7 +217,7 @@ Predicts whether a news article is fake or real.
 }
 ```
 
-### Example Response
+### Response
 
 ```json
 {
@@ -135,14 +228,90 @@ Predicts whether a news article is fake or real.
 
 ---
 
-## 📊 Model Performance
+# ❌ Input Validation
 
-* Algorithm: Logistic Regression
-* Feature Extraction: TF-IDF Vectorizer
-* Train-Test Split: 80/20
-* Test Accuracy: **98.59%**
+The API validates incoming requests before prediction.
 
-Classification metrics:
+## Empty Input
+
+Request:
+
+```json
+{
+  "text": ""
+}
+```
+
+Response:
+
+```json
+{
+  "detail": "News text cannot be empty."
+}
+```
+
+---
+
+## Short Input
+
+Request:
+
+```json
+{
+  "text": "Hello"
+}
+```
+
+Response:
+
+```json
+{
+  "detail": "News text must be at least 20 characters long."
+}
+```
+
+---
+
+# 📸 Screenshots
+
+## Home Endpoint
+
+![Home](screenshots/home.png)
+
+## Successful Prediction
+
+![Prediction](screenshots/real_prediction.png)
+
+## Empty Input Validation
+
+![Empty Input](screenshots/empty_input.png)
+
+## Short Input Validation
+
+![Short Input](screenshots/short_input.png)
+
+---
+
+# 📈 Model Performance
+
+### Algorithm
+
+Logistic Regression
+
+### Feature Extraction
+
+TF-IDF Vectorization
+
+### Dataset Split
+
+80% Training
+20% Testing
+
+### Accuracy
+
+**98.59%**
+
+### Classification Metrics
 
 * Precision: ~0.99
 * Recall: ~0.99
@@ -150,46 +319,30 @@ Classification metrics:
 
 ---
 
-## ⚠️ Limitations
+# ⚠️ Limitations
 
-* The model was trained primarily on political and world news articles.
-* Predictions on very short or out-of-domain text may be less reliable.
-* The model recognises patterns in text rather than verifying factual correctness.
-* Confidence scores indicate the model's certainty, not whether a claim is objectively true.
-
----
-
-## 💡 Future Improvements
-
-Possible future enhancements include:
-
-* Docker containerisation
-* React or Streamlit frontend
-* Cloud deployment (Render or Hugging Face Spaces)
-* Support for larger and more diverse datasets
-* Deep learning models such as BERT or RoBERTa
+* The model is trained mainly on political and world news articles.
+* Short or unrelated text may produce inaccurate predictions.
+* The model identifies patterns in language rather than verifying facts.
+* Confidence scores represent model certainty, not factual correctness.
+* Performance depends heavily on the quality and diversity of training data.
 
 ---
 
-## 📜 License
+# 💡 Future Improvements
 
-This project is intended for educational and learning purposes.
+Possible future enhancements:
 
+* Deploy API using cloud platforms such as Render or Hugging Face Spaces
+* Add Docker containerization
+* Build a React or Streamlit frontend
+* Train on larger and more diverse datasets
+* Compare additional models such as Naive Bayes, SVM, or transformer-based models like BERT
+* Add automated model retraining pipelines
 
-## 📸 Screenshots
+---
 
-### Home Endpoint
+# 📜 License
 
-![Home Page](screenshots/home.png)
+This project is created for educational and portfolio purposes.
 
-### Successful Prediction
-
-![Prediction](screenshots/real_prediction.png)
-
-### Empty Input Validation
-
-![Empty Input](screenshots/empty_input.png)
-
-### Minimum Length Validation
-
-![Short Input](screenshots/short_input.png)
